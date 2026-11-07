@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flat List | MMS Prototype</title>
+</head>
+<body data-entry="FlatList">
+<div id="root"></div>
+<template data-dc="FlatList">
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.mms,.mms button,.mms input,.mms select{font-family:Roboto,"Segoe UI",Arial,sans-serif}
+.mms{background:#F4F6F7;color:#263238;font-size:14px;line-height:1.35;min-height:100%}
+.mms *{box-sizing:border-box}
+.mms button{cursor:pointer}
+.mms button:focus-visible,.mms input:focus-visible,.mms select:focus-visible{outline:2px solid #0A7CC2;outline-offset:1px}
+
+.appbar{background:#5A7785;color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;min-height:48px;padding:4px 16px}
+.appbar .logo{font-size:30px;font-weight:300;letter-spacing:.5px;line-height:1}
+.appbar .screen{font-size:14px;font-weight:500}
+.appbar .store{font-size:16px;font-weight:500;flex:1 1 180px;text-align:center}
+.appbar .user{font-size:14px;font-weight:500}
+.barbtn{background:none;border:0;color:#fff;padding:6px;display:inline-flex;border-radius:4px}
+.barbtn:hover{background:rgba(255,255,255,.16)}
+
+.layout{display:flex;flex-wrap:wrap;gap:12px;padding:12px;align-items:flex-start}
+.side{flex:1 1 250px;max-width:100%;background:#fff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.2);overflow:hidden}
+.content{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:10px}
+
+.side-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 6px}
+.side-head h2{margin:0;font-size:15px;font-weight:700}
+.round{border:0;color:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.round:hover{filter:brightness(.9)}
+.round.sm{width:26px;height:26px;background:#4CAF50}
+.round.lg{width:38px;height:38px}
+.round.grey{background:#616161}.round.blue{background:#2196F3}.round.green{background:#4CAF50}
+.field{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #CFD8DC;border-radius:6px;padding:0 8px;color:#6B7A83}
+.field:focus-within{border-color:#0A7CC2}
+.field input{border:0;outline:0 !important;background:none;flex:1;min-width:0;font-size:14px;color:#263238;padding:7px 0}
+.field input::placeholder{color:#6B7A83;font-style:italic}
+.side .field{margin:0 12px 8px}
+.side-list{max-height:700px;overflow-y:auto;border-top:1px solid #ECEFF1}
+.side-item{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:0;border-bottom:1px solid #ECEFF1;padding:9px 12px;text-align:left;font-size:14px;color:#263238}
+.side-item:hover{background:#F1F6F8}
+.side-item.on{background:#DDEFFA;font-weight:500}
+.side-item.zero{color:#6B7A83}
+.side-item .n{font-weight:700;font-size:13px;flex:none}
+.side-item.zero .n{font-weight:400}
+.side-item .pre{color:#55656E;font-size:12px;white-space:nowrap}
+
+.toolbar{background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.14);padding:10px 12px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.clear-x{border:0;background:none;color:#55656E;padding:4px;display:inline-flex}
+.checks{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.tri{display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:3px 0;font-size:15px;color:#37474F}
+.tri .box{width:20px;height:20px;border:2px solid #546E7A;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#37474F;flex:none}
+.tri .word{font-size:12px;color:#55656E}
+.actions{display:flex;gap:8px;margin-left:auto}
+
+.results{display:flex;flex-direction:column;gap:8px;padding:2px 4px}
+.results-line{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.results-line h1{margin:0;font-size:17px;font-weight:700}
+.results-line .sum{color:#455A64}
+.pill{display:inline-flex;align-items:center;gap:4px;background:#DDEFFA;border:0;border-radius:14px;padding:4px 8px 4px 11px;font-size:13px;color:#0B4F7A}
+.textbtn{background:none;border:0;color:#0A7CC2;font-size:13px;padding:4px}
+.textbtn:hover{text-decoration:underline}
+.chipset{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #CFD8DC;background:#fff;border-radius:14px;padding:3px 10px;font-size:13px;color:#37474F;min-height:26px}
+.chip b{font-weight:700;color:#263238}
+.chip:hover{border-color:#0A7CC2}
+.chip.on{background:#0A7CC2;border-color:#0A7CC2;color:#fff}
+.chip.on b{color:#fff}
+.chip.more{border-style:dashed;color:#55656E}
+
+.asset{background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.14);overflow:hidden}
+.list{display:flex;flex-direction:column;gap:10px}
+@media (max-width:1240px){
+  .list-scroll{overflow-x:auto}
+  .list{min-width:950px}
+}
+.asset-head{display:grid;grid-template-columns:minmax(330px,5fr) minmax(0,6fr) 92px;gap:0 16px;align-items:center;padding-right:16px}
+.asset-toggle{display:flex;gap:10px;align-items:center;background:none;border:0;padding:10px 0 10px 8px;text-align:left;color:inherit;min-width:0;width:100%}
+.asset-toggle:hover .asset-name{color:#0A7CC2}
+.chev{color:#546E7A;display:inline-flex;transition:transform .12s;flex:none}
+.chev.open{transform:rotate(90deg)}
+.asset-img{width:84px;height:63px;object-fit:contain;border-radius:3px;flex:none;background:#F5F7F8}
+.asset-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.asset-name{font-size:15px;font-weight:700;color:#212B31;display:block}
+.asset-spec{font-size:13.5px;color:#37474F;display:block}
+.asset-meta{display:flex;flex-wrap:wrap;align-items:center;gap:3px 12px;margin-top:1px;font-size:12.5px;color:#55656E}
+.asset-meta b{color:#263238}
+.capital{align-self:flex-start;margin-top:3px;background:#ECEFF1;color:#37474F;border-radius:12px;padding:4px 10px;font-size:11.5px;line-height:1.2;font-weight:500;white-space:nowrap}
+.dep-label{font-size:12px;color:#55656E;margin-bottom:4px}
+.qty{text-align:right;grid-column:3;grid-row:1}
+.qty .big{font-size:26px;font-weight:700;line-height:1.1;color:#212B31}
+.qty .cap{font-size:12px;color:#55656E}
+
+.dgrid{display:grid;grid-template-columns:112px 84px minmax(170px,1.6fr) 100px 124px minmax(170px,1.2fr) 84px;gap:0 12px;align-items:center;padding:6px 16px}
+.cols{position:sticky;top:0;z-index:5;align-items:start;background:#ECEFF1;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.2);padding-top:8px;padding-bottom:8px}
+.fcol{display:flex;flex-direction:column;gap:4px;min-width:0;font-size:12.5px;font-weight:700;color:#37474F}
+.fcol.right{text-align:right}
+.f-input{width:100%;height:28px;border:1px solid #B0BEC5;border-radius:4px;background:#fff;padding:0 7px;font-size:12.5px;font-weight:400;color:#263238}
+.f-input::placeholder{color:#6B7A83;font-style:italic}
+.f-input.right{text-align:right}
+.asset.open .asset-head{border-bottom:1px solid #CFD8DC}
+.row{border-bottom:1px solid #ECEFF1;min-height:56px}
+.row.alt{background:#F8F9F9}
+.row:hover{background:#F1F6F8}
+.stack{position:relative;display:block;width:70px;height:52px;background:none;border:0;padding:0}
+.stack img{position:absolute;display:block;width:56px;height:42px;object-fit:contain;border:1px solid #B0BEC5;border-radius:2px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.stack:hover img{border-color:#0A7CC2}
+.stack .st-2{left:14px;top:0}
+.stack .st-1{left:7px;top:5px}
+.stack .st-0{left:0;top:10px}
+.stack .solo{left:0;top:5px}
+.b-no{font-size:14px;font-weight:700}
+.store-name{font-weight:500;display:block}
+.store-room{display:flex;align-items:center;gap:4px;font-size:12.5px;color:#55656E;min-width:0}
+.cell-edit{display:flex;align-items:center;gap:4px;min-width:0}
+.missing{color:#6B7A83;font-style:italic}
+.tag{background:none;border:0;padding:0;color:#0A7CC2;font-size:14px;font-weight:500}
+.tag:hover{text-decoration:underline}
+.edit{background:none;border:0;padding:3px;color:#5C6BC0;display:inline-flex;border-radius:3px;flex:none}
+.edit:hover{background:#E8EAF6}
+@media (hover:hover){.edit{opacity:0}.row:hover .edit,.edit:focus-visible{opacity:1}}
+.txn{font-size:13px;color:#263238;display:block}
+.grn{font-size:12px;color:#55656E;display:block}
+.num{text-align:right}
+.q1{font-weight:500;display:block}
+.rate{font-size:12px;color:#55656E;display:block}
+.gallery{background:#EFFAFA;border-bottom:1px solid #CFD8DC;padding:10px 16px 12px}
+.g-title{font-size:12.5px;font-weight:500;color:#37474F;margin-bottom:8px}
+.g-list{display:flex;flex-wrap:wrap;gap:10px}
+.g-item{margin:0;width:164px;background:#fff;border:1px solid #CFD8DC;border-radius:4px;padding:6px}
+.g-item img{display:block;width:100%;height:114px;object-fit:contain}
+.g-item figcaption{margin-top:5px;font-size:12.5px;color:#37474F;overflow-wrap:anywhere}
+.g-add{width:164px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#fff;border:1px dashed #0A7CC2;border-radius:4px;color:#0A7CC2;font-size:13px;font-weight:500}
+.g-add:hover{background:#DDEFFA}
+.empty-card{background:#fff;border-radius:6px;padding:40px 16px;text-align:center;color:#455A64;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.empty-card h2{margin:0 0 6px;font-size:16px;color:#263238}
+
+.m-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;background:rgba(38,50,56,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+.m-box{width:100%;max-width:440px;background:#fff;border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,.3);overflow:hidden}
+.m-head{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#5A7785;color:#fff;padding:10px 12px 10px 16px}
+.m-head h2{margin:0;font-size:16px;font-weight:500}
+.m-head .clear-x{color:#fff}
+.m-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+.m-context{font-size:13px;color:#455A64;background:#EFFAFA;border-radius:4px;padding:8px 10px}
+.m-field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:500;color:#37474F}
+.m-field input,.m-field select{width:100%;height:40px;border:1px solid #90A4AE;border-radius:4px;padding:0 10px;background:#fff;font-size:14px;font-weight:400;color:#263238}
+.m-field input::placeholder{color:#6B7A83;font-style:italic}
+.ip-wrap{width:100%;max-width:1120px;max-height:100%;overflow:auto;background:#F4F6F7;border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.m-foot{display:flex;justify-content:flex-end;gap:8px;padding:0 16px 16px}
+.m-btn{min-height:38px;padding:0 16px;border:1px solid #90A4AE;border-radius:4px;background:#fff;color:#37474F;font-size:14px;font-weight:500}
+.m-btn:hover{background:#F1F6F8}
+.m-btn.primary{background:#0A7CC2;border-color:#0A7CC2;color:#fff}
+.m-btn.primary:hover{background:#086AA6}
+
+@media (max-width:760px){
+  .asset-head{grid-template-columns:minmax(0,1fr) 68px;padding-right:12px;gap:0 8px}
+  .deployed{grid-column:1 / -1;grid-row:2;padding:0 0 10px 12px}
+  .asset-img{width:64px;height:48px}
+  .qty{grid-column:2}
+  .side-list{max-height:220px}
+  .appbar .store{order:3;flex-basis:100%;text-align:left}
+  .actions{margin-left:0}
+}
+@media (pointer:coarse){
+  .chip,.tag,.edit,.tri,.textbtn,.clear-x,.pill,.barbtn{min-height:44px;min-width:44px;justify-content:center}
+  .round.lg,.round.sm{width:44px;height:44px}
+  .f-input,.m-btn,.m-field input,.m-field select{min-height:44px}
+}
+</style>
+</helmet>
+<div class="mms">
+
+<header class="appbar">
+  <button class="barbtn" aria-label="Open menu" title="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+  <span class="logo">MMS</span>
+  <span class="screen">Asset And Tagged Items [Report]</span>
+  <span class="store">ST: Demo Org - Central Store</span>
+  <span class="user">Demo User [MMS_ADM]</span>
+  <button class="barbtn" aria-label="Calendar" title="Calendar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="1"></rect><path d="M3 10h18M9 10v11M15 10v11M3 15.500h18"></path></svg></button>
+</header>
+
+<div class="layout">
+
+<aside class="side" aria-label="Browse assets">
+  <div class="side-head">
+    <h2>{{sideTitle}}</h2>
+    <button class="round sm" aria-label="Refresh list" title="Refresh list"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-4.500L4 9M4 4v5h5M4 13a8 8 0 0 0 14 4.500L20 15M20 20v-5h-5"></path></svg></button>
+  </div>
+  <label class="field">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+    <input aria-label="{{sidePlaceholder}}" placeholder="{{sidePlaceholder}}" value="{{listQ}}" onChange="{{onListQ}}">
+  </label>
+  <div class="side-list">
+    <sc-for list="{{sideItems}}" as="it" hint-placeholder-count="8">
+      <button class="side-item {{it.cls}}" aria-pressed="{{it.on}}" onClick="{{it.pick}}">
+        <span>{{it.label}} <span class="pre">{{it.pre}}</span></span>
+        <span class="n">{{it.count}}</span>
+      </button>
+    </sc-for>
+  </div>
+</aside>
+
+<main class="content">
+
+<section class="toolbar" aria-label="Filters and actions">
+  <div class="checks">
+    <sc-for list="{{tri}}" as="t" hint-placeholder-count="3">
+      <button class="tri" aria-label="{{t.aria}}" title="Click to switch between Any, Yes and No" onClick="{{t.cycle}}">
+        <span class="box">
+          <sc-if value="{{t.isAny}}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></sc-if>
+          <sc-if value="{{t.isYes}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4.500 4.500L19 7"></path></svg></sc-if>
+        </span>
+        <span>{{t.label}}</span><span class="word">{{t.word}}</span>
+      </button>
+    </sc-for>
+    <button class="tri" aria-pressed="{{wuOn}}" aria-label="Include WU" onClick="{{toggleWu}}">
+      <span class="box"><sc-if value="{{wuOn}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4.500 4.500L19 7"></path></svg></sc-if></span>
+      <span>Incl. WU</span>
+    </button>
+  </div>
+  <div class="actions">
+    <button class="round lg grey" aria-label="Collapse all" title="Collapse all" onClick="{{collapseAll}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"></path></svg></button>
+    <button class="round lg grey" aria-label="Expand all" title="Expand all" onClick="{{expandAll}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+    <button class="round lg blue" aria-label="Export to Excel" title="Export to Excel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4M9.500 11l5 6M14.500 11l-5 6"></path></svg></button>
+    <button class="round lg green" aria-label="Refresh" title="Refresh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-4.500L4 9M4 4v5h5M4 13a8 8 0 0 0 14 4.500L20 15M20 20v-5h-5"></path></svg></button>
+  </div>
+</section>
+
+<section class="results" aria-live="polite">
+  <div class="results-line">
+    <h1>{{heading}}</h1>
+    <span class="sum">{{summary}}</span>
+    <sc-for list="{{pills}}" as="p" hint-placeholder-count="0">
+      <button class="pill" aria-label="{{p.aria}}" onClick="{{p.remove}}">{{p.label}} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+    </sc-for>
+    <sc-if value="{{hasFilters}}" hint-placeholder-val="{{ false }}"><button class="textbtn" onClick="{{clearFilters}}">Clear column filters</button></sc-if>
+    <sc-if value="{{hasPills}}" hint-placeholder-val="{{ false }}"><button class="textbtn" onClick="{{clearAll}}">Clear all</button></sc-if>
+  </div>
+</section>
+
+<div class="list-scroll">
+<div class="list">
+  <div class="dgrid cols">
+    <label class="fcol"><span>Item</span><input class="f-input" placeholder="Filter..." value="{{f.item}}" onChange="{{on.item}}"></label>
+    <label class="fcol"><span>Batch No</span><input class="f-input" placeholder="Filter..." value="{{f.batch}}" onChange="{{on.batch}}"></label>
+    <label class="fcol"><span>Store / Consumer</span><input class="f-input" placeholder="Filter..." value="{{f.store}}" onChange="{{on.store}}"></label>
+    <label class="fcol"><span>Global Tag No</span><input class="f-input" placeholder="Filter..." value="{{f.g}}" onChange="{{on.g}}"></label>
+    <label class="fcol"><span>Local Tag No</span><input class="f-input" placeholder="Filter..." value="{{f.l}}" onChange="{{on.l}}"></label>
+    <label class="fcol"><span>Txn No / GRN No</span><input class="f-input" placeholder="Filter..." value="{{f.txn}}" onChange="{{on.txn}}"></label>
+    <label class="fcol right"><span>Qty / Rate</span><input class="f-input right" placeholder="Filter..." value="{{f.qty}}" onChange="{{on.qty}}"></label>
+  </div>
+
+<sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+  <div class="empty-card">
+    <h2>No assets match these filters</h2>
+    <button class="textbtn" onClick="{{clearAll}}">Clear all filters</button>
+  </div>
+</sc-if>
+
+<sc-for list="{{assets}}" as="a" hint-placeholder-count="5">
+  <article class="asset {{a.openCls}}">
+    <div class="inner">
+      <div class="asset-head">
+        <button class="asset-toggle" aria-expanded="{{a.openStr}}" title="{{a.toggleTitle}}" onClick="{{a.toggle}}">
+          <span class="chev {{a.chevCls}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+          <img class="asset-img" src="{{a.img}}" alt="{{a.name}}">
+          <span class="asset-info">
+            <span class="asset-name">{{a.name}}</span>
+            <span class="asset-spec">{{a.spec}}</span>
+            <span class="asset-meta">
+              <span>No: <b>{{a.no}}</b></span>
+              <span>SKU: <b>{{a.sku}}</b></span>
+            </span>
+            <sc-if value="{{a.capital}}" hint-placeholder-val="{{ true }}"><span class="capital">{{a.capital}}</span></sc-if>
+          </span>
+        </button>
+        <sc-if value="{{a.closed}}" hint-placeholder-val="{{ true }}">
+          <div class="deployed">
+            <div class="dep-label">{{a.chipLabel}}</div>
+            <div class="chipset">
+              <sc-for list="{{a.chips}}" as="c" hint-placeholder-count="4">
+                <button class="chip {{c.cls}}" aria-pressed="{{c.on}}" title="{{c.title}}" onClick="{{c.pick}}">{{c.label}} <b>{{c.count}}</b></button>
+              </sc-for>
+              <sc-if value="{{a.hasMore}}" hint-placeholder-val="{{ false }}">
+                <button class="chip more" onClick="{{a.showMore}}">{{a.moreLabel}}</button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+        <div class="qty">
+          <div class="big">{{a.shown}}</div>
+          <div class="cap">{{a.qtyCap}}</div>
+        </div>
+      </div>
+
+      <sc-if value="{{a.open}}" hint-placeholder-val="{{ false }}">
+        <div role="table" aria-label="{{a.tableLabel}}">
+          <sc-for list="{{a.rows}}" as="r" hint-placeholder-count="4">
+            <div class="dgrid row {{r.altCls}}" role="row">
+              <span role="cell">
+                <button class="stack" aria-expanded="{{r.galleryStr}}" aria-label="{{r.imgAria}}" title="{{r.imgAria}}" onClick="{{r.toggleImgs}}">
+                  <sc-for list="{{r.stack}}" as="st" hint-placeholder-count="3"><img class="{{st.cls}}" src="{{st.img}}" alt=""></sc-for>
+                </button>
+              </span>
+              <span class="b-no" role="cell">{{r.batch}}</span>
+              <span role="cell">
+                <span class="store-name">{{r.dept}}</span>
+                <span class="store-room">
+                  <span class="{{r.roomCls}}">{{r.room}}</span>
+                  <button class="edit" aria-label="Edit room" title="Edit room" onClick="{{r.editRoom}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"></path></svg></button>
+                </span>
+              </span>
+              <span class="cell-edit" role="cell">
+                <sc-if value="{{r.hasG}}" hint-placeholder-val="{{ true }}"><button class="tag">{{r.g}}</button></sc-if>
+                <sc-if value="{{r.noG}}" hint-placeholder-val="{{ false }}"><span class="missing">Not tagged</span></sc-if>
+                <button class="edit" aria-label="Edit global tag" title="Edit global tag" onClick="{{r.editG}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"></path></svg></button>
+              </span>
+              <span class="cell-edit" role="cell">
+                <span class="{{r.localCls}}">{{r.l}}</span>
+                <button class="edit" aria-label="Edit local tag" title="Edit local tag" onClick="{{r.editL}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"></path></svg></button>
+              </span>
+              <span role="cell"><span class="txn">{{r.txn}}</span><span class="grn">{{r.grn}}</span></span>
+              <span class="num" role="cell"><span class="q1">{{r.qty}}</span><span class="rate">{{r.rate}}</span></span>
+            </div>
+            <sc-if value="{{r.galleryOpen}}" hint-placeholder-val="{{ false }}">
+              <div class="gallery" role="row">
+                <div class="g-title" role="cell">{{r.galleryTitle}}</div>
+                <div class="g-list" role="cell">
+                  <sc-for list="{{r.images}}" as="im" hint-placeholder-count="4">
+                    <figure class="g-item">
+                      <img src="{{im.img}}" alt="{{im.alt}}">
+                      <figcaption>{{im.caption}}</figcaption>
+                    </figure>
+                  </sc-for>
+                  <button class="g-add" onClick="{{r.addImages}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{r.addLabel}}</button>
+                </div>
+              </div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </article>
+</sc-for>
+</div>
+</div>
+
+</main>
+</div>
+
+<sc-if value="{{showModal}}" hint-placeholder-val="{{ false }}">
+  <div class="m-overlay" onKeyDown="{{onModalKey}}">
+    <div class="m-box" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <form onSubmit="{{saveEdit}}">
+        <div class="m-head">
+          <h2 id="edit-title">{{modal.title}}</h2>
+          <button type="button" class="clear-x" aria-label="Close" onClick="{{closeEdit}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="m-body">
+          <div class="m-context">{{modal.context}}</div>
+          <label class="m-field">
+            <span>{{modal.label}}</span>
+            <sc-if value="{{modal.isText}}" hint-placeholder-val="{{ false }}">
+              <input autoFocus="{{modal.isText}}" placeholder="{{modal.placeholder}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+            </sc-if>
+            <sc-if value="{{modal.isACM}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isACM}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Hostel Block A</option>
+                <option>Hostel Block B</option>
+                <option>Office Room 12</option>
+                <option>Reception</option>
+                <option>Store Room</option>
+              </select>
+            </sc-if>
+            <sc-if value="{{modal.isACT}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isACT}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Hall 1 (Accounts Office)</option>
+                <option>Hall 2 (Audit Room)</option>
+              </select>
+            </sc-if>
+            <sc-if value="{{modal.isBK}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isBK}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Main Store</option>
+                <option>Yard Office</option>
+              </select>
+            </sc-if>
+            <sc-if value="{{modal.isDH}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isDH}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Pharmacy</option>
+                <option>Records Room</option>
+              </select>
+            </sc-if>
+            <sc-if value="{{modal.isEL}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isEL}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Site Office</option>
+                <option>Workshop</option>
+              </select>
+            </sc-if>
+            <sc-if value="{{modal.isHZ}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isHZ}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Front Office</option>
+                <option>Main Office</option>
+              </select>
+            </sc-if>
+            <sc-if value="{{modal.isIT}}" hint-placeholder-val="{{ false }}">
+              <select autoFocus="{{modal.isIT}}" value="{{modal.value}}" onChange="{{onEditValue}}">
+                <option value="">Select room</option>
+                <option>Help Desk</option>
+                <option>Server Room</option>
+              </select>
+            </sc-if>
+          </label>
+        </div>
+        <div class="m-foot">
+          <button type="button" class="m-btn" onClick="{{closeEdit}}">Cancel</button>
+          <button type="submit" class="m-btn primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{showAdd}}" hint-placeholder-val="{{ false }}">
+  <div class="m-overlay" onKeyDown="{{onAddKey}}">
+    <div class="ip-wrap" role="dialog" aria-modal="true" aria-label="Attach images">
+      <dc-import name="ImagePicker" info="{{add}}" on-close="{{closeAdd}}" on-save="{{saveAdd}}" hint-size="100%,680px"></dc-import>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</template>
+<script type="text/plain" data-dc-logic="FlatList">
+class Component extends DCLogic {
+  prefixes() {
+    return [['Computer Desktop & Laptops','C-'],['Computer Monitor','M-'],['Computer Server and Storage','CSRV'],['Computer Tablets','CTAB-'],['Cupboard','CB-'],['Desktop Micro','DM-'],['Drawer Set','DS-'],['FXS DSLAM others','TELCO-'],['Hard disk Drive','HDD'],['Mobile Phone','MOB-'],['Network Switch','SW-'],['POS Full Client','PFC-'],['POS Light Client','PLC-'],['Printer','P-'],['Routers','ROUT'],['Scanner','S-']];
+  }
+  assetData() {
+    if (this._assets) return this._assets;
+    const I = {
+      printer:'images/printer.svg', scanner:'images/scanner.svg', monitor:'images/monitor.svg',
+      single:'images/cupboard-single.svg', double:'images/cupboard-double.svg', s3:'images/cupboard-3shelf.svg', s4:'images/cupboard-4shelf.svg',
+      d2:'images/drawer-2.svg', d3:'images/drawer-3.svg', none:'images/placeholder.svg',
+      ddOpen:'images/cupboard-double-open.svg', ddSide:'images/cupboard-side.svg', ddLock:'images/cupboard-lock.svg',
+      prSide:'images/printer-side.svg', prTray:'images/printer-tray.svg', prLabel:'images/printer-label.svg'
+    };
+    this._none = I.none;
+    const ACM='Accommodation', ACT='Accounts', BK='Yard Store', DH='Campus Clinic', EL='Electrical', HZ="Director's Office", IT='IT Department';
+    // [sub, store / consumer, room, global tag, local tag, batch, txn, grn, rate]
+    const mk = (rows) => rows.map((r,i) => ({ id:i, sub:r[0], dept:r[1], room:r[2], g:r[3], l:r[4], batch:r[5], txn:r[6], grn:r[7], rate:r[8], qty:1 }));
+    this._assets = [
+      { id:'printer', name:'Printer', spec:'HP, Laser, 1022, 18PPM, 1200 DPI, USB, Black, A4, Single', no:3056, sku:'NOS', prefix:'P-', capital:true, img:I.printer, subs:[],
+        extra:[{img:I.prSide,name:'printer-side.jpg'},{img:I.prTray,name:'printer-paper-tray.jpg'},{img:I.prLabel,name:'printer-serial-label.jpg'}], rows:mk([
+        ['',HZ,'','P-712','','','210722-DM-CS-MC-01','090310-DM-CS-OS-02',9200],
+        ['',ACM,'Hostel Block A','P-720','ACM/PR-08','3','240929-DM-ACM-MC-32','090310-DM-CS-OS-04',9200],
+        ['',ACM,'Hostel Block B','P-717','ACM/PR-09','1','240929-DM-ACM-MC-32','090310-DM-CS-OS-04',9200],
+        ['',ACT,'Hall 1 (Accounts Office)','P-716','','','250101-DM-ACT-MC-01','090310-DM-CS-OS-03',9200],
+        ['',DH,'','P-724','','2','250101-DM-CC-MC-01','090310-DM-CS-OS-05',9200],
+        ['',EL,'','P-723','','1','250101-DM-EL-MC-01','090310-DM-CS-OS-05',9200],
+        ['',BK,'','P-715','','','','090411-DM-CS-OS-02',1500]
+      ])},
+      { id:'scan3110', name:'Scanner', spec:'HP, Scanjet G 3110, Flatbed, USB', no:3057, sku:'NOS', prefix:'S-', capital:true, img:I.scanner, subs:[], rows:mk([
+        ['',ACM,'Reception','S-201','ACM/SC-01','1','240929-DM-ACM-MC-33','090310-DM-CS-OS-07',6500],
+        ['',ACT,'Hall 1 (Accounts Office)','S-202','','1','250101-DM-ACT-MC-02','090310-DM-CS-OS-07',6500],
+        ['',ACT,'Hall 2 (Audit Room)','S-203','','1','250101-DM-ACT-MC-02','090310-DM-CS-OS-07',6500],
+        ['',DH,'Records Room','S-204','CC/SC-02','2','250101-DM-CC-MC-02','090310-DM-CS-OS-07',6500],
+        ['',DH,'Pharmacy','S-205','','2','250101-DM-CC-MC-02','090310-DM-CS-OS-07',6500],
+        ['',HZ,'','S-206','','','210722-DM-CS-MC-02','090310-DM-CS-OS-07',6500],
+        ['',IT,'Server Room','S-207','IT/SC-01','3','250201-DM-IT-MC-01','090310-DM-CS-OS-08',6500],
+        ['',IT,'Help Desk','S-208','IT/SC-02','3','250201-DM-IT-MC-01','090310-DM-CS-OS-08',6500]
+      ])},
+      { id:'mon', name:'Computer Monitor', spec:'Dell, MDL: N/A, 22 inch, LED', no:3058, sku:'NOS', prefix:'M-', capital:true, img:I.monitor, subs:[], rows:mk([
+        ['',ACM,'Office Room 12','M-301','ACM/MN-01','1','240929-DM-ACM-MC-34','090310-DM-CS-OS-09',12500],
+        ['',ACM,'Reception','M-302','ACM/MN-02','1','240929-DM-ACM-MC-34','090310-DM-CS-OS-09',12500],
+        ['',ACT,'Hall 1 (Accounts Office)','M-303','','2','250101-DM-ACT-MC-03','090310-DM-CS-OS-09',12500],
+        ['',ACT,'Hall 1 (Accounts Office)','M-304','','2','250101-DM-ACT-MC-03','090310-DM-CS-OS-09',12500],
+        ['',DH,'Records Room','M-305','CC/MN-01','2','250101-DM-CC-MC-03','090310-DM-CS-OS-09',12500],
+        ['',EL,'Site Office','M-306','','3','250101-DM-EL-MC-02','090310-DM-CS-OS-10',12500],
+        ['',IT,'Help Desk','M-307','IT/MN-01','3','250201-DM-IT-MC-02','090310-DM-CS-OS-10',12500],
+        ['',IT,'Help Desk','M-308','IT/MN-02','3','250201-DM-IT-MC-02','090310-DM-CS-OS-10',12500],
+        ['',IT,'Server Room','M-309','IT/MN-03','3','250201-DM-IT-MC-02','090310-DM-CS-OS-10',12500],
+        ['',HZ,'','M-310','','','210722-DM-CS-MC-03','090310-DM-CS-OS-10',12500]
+      ])},
+      { id:'scan3010', name:'Scanner', spec:'HP, Scanjet 3010, Flatbed', no:3059, sku:'NOS', prefix:'S-', capital:true, img:I.none, subs:[], rows:mk([
+        ['',IT,'Help Desk','S-209','','','250201-DM-IT-MC-03','090411-DM-CS-OS-03',4200]
+      ])},
+      { id:'cup', name:'Cupboard', spec:'Steel, Lockable', no:3101, sku:'NOS', prefix:'CB-', capital:true, img:I.double,
+        subs:[{id:'sd',name:'Single Door',img:I.single},
+          {id:'dd',name:'Double Door',img:I.double,images:[{img:I.double,caption:'Front, closed'},{img:I.ddOpen,caption:'Front, open'},{img:I.ddSide,caption:'Side'},{img:I.ddLock,caption:'Handles and lock'}]},
+          {id:'s3',name:'3 Shelf',img:I.s3},
+          {id:'s4',name:'4 Shelf',img:I.s4,images:[{img:I.s4,caption:'Front'},{img:I.ddSide,caption:'Side'}]}], rows:mk([
+        ['sd',ACM,'Hostel Block A','CB-401','ACM/CB-11','','240929-DM-ACM-MC-40','090411-DM-CS-OS-11',9500],
+        ['dd',ACM,'Office Room 12','CB-402','ACM/CB-12','','240929-DM-ACM-MC-40','090411-DM-CS-OS-11',14500],
+        ['dd',ACM,'Store Room','CB-403','','','240929-DM-ACM-MC-41','090411-DM-CS-OS-11',14500],
+        ['s3',ACM,'Reception','CB-404','ACM/CB-14','','240929-DM-ACM-MC-41','090411-DM-CS-OS-12',11000],
+        ['s4',ACM,'Store Room','','','','240929-DM-ACM-MC-41','090411-DM-CS-OS-12',12500],
+        ['dd',ACT,'Hall 1 (Accounts Office)','CB-405','','','250101-DM-ACT-MC-05','090411-DM-CS-OS-11',14500],
+        ['dd',ACT,'Hall 2 (Audit Room)','CB-406','','','250101-DM-ACT-MC-05','090411-DM-CS-OS-11',14500],
+        ['s4',ACT,'Hall 2 (Audit Room)','CB-407','','','250101-DM-ACT-MC-05','090411-DM-CS-OS-12',12500],
+        ['sd',DH,'Pharmacy','CB-408','CC/CB-01','','250101-DM-CC-MC-05','090411-DM-CS-OS-13',9500],
+        ['s3',DH,'Records Room','CB-409','CC/CB-02','','250101-DM-CC-MC-05','090411-DM-CS-OS-13',11000],
+        ['s4',DH,'Records Room','CB-410','CC/CB-03','','250101-DM-CC-MC-05','090411-DM-CS-OS-13',12500],
+        ['sd',EL,'Site Office','','','','250101-DM-EL-MC-05','090411-DM-CS-OS-14',9500],
+        ['dd',HZ,'','CB-411','','','210722-DM-CS-MC-05','090411-DM-CS-OS-14',14500],
+        ['s3',IT,'Server Room','CB-412','IT/CB-01','','250201-DM-IT-MC-05','090411-DM-CS-OS-14',11000]
+      ])},
+      { id:'draw', name:'Drawer Set', spec:'Steel, Under-desk, Lockable', no:3102, sku:'NOS', prefix:'DS-', capital:true, img:I.d3,
+        subs:[{id:'d2',name:'2 Drawer',img:I.d2},{id:'d3',name:'3 Drawer',img:I.d3},{id:'d4',name:'4 Drawer',img:I.none}], rows:mk([
+        ['d2',ACM,'Office Room 12','DS-501','ACM/DS-01','','240929-DM-ACM-MC-44','090411-DM-CS-OS-15',4800],
+        ['d3',ACM,'Office Room 12','DS-502','ACM/DS-02','','240929-DM-ACM-MC-44','090411-DM-CS-OS-15',5900],
+        ['d3',ACM,'Reception','DS-503','','','240929-DM-ACM-MC-44','090411-DM-CS-OS-15',5900],
+        ['d2',ACT,'Hall 1 (Accounts Office)','DS-504','','','250101-DM-ACT-MC-06','090411-DM-CS-OS-15',4800],
+        ['d2',ACT,'Hall 1 (Accounts Office)','DS-505','','','250101-DM-ACT-MC-06','090411-DM-CS-OS-15',4800],
+        ['d4',ACT,'Hall 2 (Audit Room)','DS-506','','','250101-DM-ACT-MC-06','090411-DM-CS-OS-16',6900],
+        ['d3',IT,'Help Desk','DS-507','IT/DS-01','','250201-DM-IT-MC-06','090411-DM-CS-OS-16',5900],
+        ['d2',IT,'Help Desk','DS-508','IT/DS-02','','250201-DM-IT-MC-06','090411-DM-CS-OS-16',4800],
+        ['d4',HZ,'','DS-509','','','210722-DM-CS-MC-06','090411-DM-CS-OS-16',6900]
+      ])}
+    ];
+    // Numeric Batch No IDs: sub-assets share one ID per batch; other rows keep their batch grouping.
+    let nextBatch = 20041;
+    this._assets.forEach((a) => {
+      const seen = {};
+      const idFor = (k) => seen[k] || (seen[k] = String(nextBatch++));
+      a.subs.forEach((x) => { x.batch = idFor('s' + x.id); });
+      a.rows.forEach((r) => { r.batch = r.sub ? idFor('s' + r.sub) : idFor(r.batch ? 'b' + r.batch : 'r' + r.id); });
+    });
+    return this._assets;
+  }
+
+  renderVals() {
+    const NO_ROOM = 'Room not recorded';
+    const s = this.state || {};
+    const A = this.assetData();
+    const none = this._none;
+    const set = (o) => this.setState(o);
+    const plural = (n, w, pl) => n + ' ' + (n === 1 ? w : (pl || w + 's'));
+    const sumQty = (rows) => rows.reduce((t, r) => t + r.qty, 0);
+    const prefix = s.prefix || '';
+    const gt = s.gt || 'any', lt = s.lt || 'any', cap = s.cap || 'yes';
+    const listQ = s.listQ || '';
+    const open = s.open || { cup: true };
+    const imgOpen = s.imgOpen || {};
+    const f = s.cf || {};
+    const setFilter = (key, value) => set({ cf: Object.assign({}, f, { [key]: value }) });
+    const hasFilters = Object.keys(f).some((k) => (f[k] || '').trim());
+    const yn = (mode, val) => mode === 'any' || (mode === 'yes') === val;
+
+    const passes = (a, r, skip) => {
+      if (!skip.prefix && prefix && a.prefix !== prefix) return false;
+      return yn(gt, !!r.g) && yn(lt, !!r.l) && yn(cap, a.capital);
+    };
+    // The shared column filters apply to every asset and match what each column displays.
+    const colPass = (a, r) => {
+      const has = (v, key) => { const t = (f[key] || '').trim().toLowerCase(); return !t || String(v).toLowerCase().indexOf(t) >= 0; };
+      const subName = (a.subs.find((x) => x.id === r.sub) || {}).name || '';
+      return has(a.name + ' ' + a.spec + ' ' + a.no + ' ' + subName, 'item')
+        && has(r.batch, 'batch')
+        && has(r.dept + ' ' + (r.room || NO_ROOM), 'store')
+        && has(r.g, 'g') && has(r.l, 'l')
+        && has(r.txn + ' ' + r.grn, 'txn')
+        && has(r.qty + ' ' + r.rate, 'qty');
+    };
+    const countBy = (rows, keyFn) => {
+      const m = {};
+      rows.forEach((r) => { const k = keyFn(r); m[k] = (m[k] || 0) + r.qty; });
+      return Object.keys(m).map((k) => ({ key: k, count: m[k] })).sort((x, y) => y.count - x.count || x.key.localeCompare(y.key));
+    };
+    const allRows = (skip) => {
+      const out = [];
+      A.forEach((a) => a.rows.forEach((r) => { if (passes(a, r, skip) && colPass(a, r)) out.push(Object.assign({ _a: a }, r)); }));
+      return out;
+    };
+
+    const isOpen = (id) => !!open[id];
+    const openPatch = (id, val) => ({ open: Object.assign({}, open, { [id]: val }) });
+
+    // Images belong to the batch when the asset has sub-assets, otherwise to the row.
+    const imageHolder = (a, r) => a.subs.find((x) => x.id === r.sub) || r;
+    const imagesOf = (a, r) => {
+      const holder = imageHolder(a, r);
+      if (holder.images) return holder.images;
+      const base = (a.subs.length ? holder.img : a.img);
+      return base === none ? [] : [{ img: base, caption: 'Main image' }];
+    };
+    const addState = s.addImg || null;
+    const closeAdd = () => set({ addImg: null });
+    // Every asset has one shared image library; batches attach images from it.
+    const imgKey = (m) => m.libId || m.img;
+    const fileName = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.jpg';
+    const libraryOf = (a) => {
+      if (!a.library) {
+        const seen = {};
+        a.library = [];
+        const push = (id, img, name) => { if (img !== none && !seen[id]) { seen[id] = true; a.library.push({ id: id, img: img, name: name }); } };
+        a.rows.forEach((r) => {
+          const sub = a.subs.find((x) => x.id === r.sub) || {};
+          imagesOf(a, r).forEach((m) => push(imgKey(m), m.img, fileName((sub.name || a.name) + ' ' + m.caption)));
+        });
+        (a.extra || []).forEach((x) => push(x.img, x.img, x.name));
+      }
+      return a.library;
+    };
+    const holdersOf = (a) => Array.from(new Set(a.rows.map((r) => imageHolder(a, r))));
+    const saveAdd = (nextLib, ids) => {
+      const ta = A.find((x) => x.id === addState.assetId);
+      const tr = ta.rows.find((x) => x.id === addState.rowId);
+      const current = imagesOf(ta, tr);
+      ta.library = nextLib.map((e) => ({ id: e.id, img: e.img, name: e.name }));
+      imageHolder(ta, tr).images = ids.map((id) => {
+        const kept = current.find((m) => imgKey(m) === id);
+        const entry = nextLib.find((e) => e.id === id);
+        return kept || { img: entry.img, caption: entry.name, libId: id };
+      });
+      // Images deleted from the library also leave any other batch that used them.
+      holdersOf(ta).forEach((h) => { if (h.images) h.images = h.images.filter((m) => nextLib.some((e) => e.id === imgKey(m))); });
+      set({ addImg: null });
+    };
+    let add = {};
+    if (addState) {
+      const ta = A.find((x) => x.id === addState.assetId);
+      const tr = ta.rows.find((x) => x.id === addState.rowId);
+      const thisHolder = imageHolder(ta, tr);
+      const others = holdersOf(ta).filter((h) => h !== thisHolder);
+      const rowOf = (h) => ta.rows.find((r) => imageHolder(ta, r) === h);
+      const library = libraryOf(ta).map((e) => Object.assign({}, e, {
+        uses: others.filter((h) => imagesOf(ta, rowOf(h)).some((m) => imgKey(m) === e.id)).length
+      }));
+      add = {
+        name: ta.name, spec: ta.spec, no: ta.no, sku: ta.sku, img: ta.img,
+        batch: tr.batch, store: tr.dept, room: tr.room || NO_ROOM, g: tr.g || 'Not tagged', l: tr.l || 'None',
+        qty: tr.qty, rate: '₹ ' + tr.rate, none: none,
+        library: library, attached: imagesOf(ta, tr).map(imgKey)
+      };
+    }
+
+    // Edit modal: room uses a dropdown of that Store / Consumer's rooms, tags use a text field.
+    const openEdit = (assetId, rowId, field, value) => set({ edit: { assetId: assetId, rowId: rowId, field: field, value: value || '' } });
+    const closeEdit = () => set({ edit: null });
+    const edit = s.edit || null;
+    const saveEdit = (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      const target = A.find((x) => x.id === edit.assetId).rows.find((x) => x.id === edit.rowId);
+      target[edit.field] = edit.value.trim();
+      set({ edit: null });
+    };
+    let modal = {};
+    if (edit) {
+      const ea = A.find((x) => x.id === edit.assetId);
+      const er = ea.rows.find((x) => x.id === edit.rowId);
+      const eSub = (ea.subs.find((x) => x.id === er.sub) || {}).name;
+      const fieldLabel = { room: 'Room / Location', g: 'Global Tag No', l: 'Local Tag No' }[edit.field];
+      const isRoom = edit.field === 'room';
+      modal = {
+        title: 'Edit ' + fieldLabel,
+        context: [ea.name, eSub, er.dept, er.g].filter(Boolean).join('  ·  '),
+        label: fieldLabel, value: edit.value, placeholder: 'Enter ' + fieldLabel,
+        isText: !isRoom,
+        isACM: isRoom && er.dept === 'Accommodation', isACT: isRoom && er.dept === 'Accounts',
+        isBK: isRoom && er.dept === 'Yard Store', isDH: isRoom && er.dept === 'Campus Clinic',
+        isEL: isRoom && er.dept === 'Electrical', isHZ: isRoom && er.dept === "Director's Office",
+        isIT: isRoom && er.dept === 'IT Department'
+      };
+    }
+
+    let assets = A.map((a) => {
+      const base = a.rows.filter((r) => passes(a, r, {}));
+      const rows = base.filter((r) => colPass(a, r));
+      if (!rows.length) return null;
+      const shown = sumQty(rows);
+      const overall = sumQty(a.rows);
+      const opened = isOpen(a.id);
+      // Pills quick-filter the shared Store / Consumer column and open this asset to show the result.
+      const chipCounts = countBy(base, (r) => r.dept);
+      const chips = chipCounts.slice(0, 5).map((c) => {
+        const on = (f.store || '').trim().toLowerCase() === c.key.toLowerCase();
+        return { label: c.key, count: c.count, on: on, cls: on ? 'on' : '', title: 'Show only ' + c.key,
+          pick: () => set(Object.assign({ cf: Object.assign({}, f, { store: on ? '' : c.key }) }, openPatch(a.id, !on))) };
+      });
+      const sorted = rows.slice().sort((x, y) => x.dept.localeCompare(y.dept) || (x.room || 'zzz').localeCompare(y.room || 'zzz') || x.g.localeCompare(y.g));
+      const outRows = sorted.map((r, i) => {
+        const images = imagesOf(a, r);
+        const sub = a.subs.find((x) => x.id === r.sub) || {};
+        const imgKey = a.id + ':' + r.id;
+        const galleryOpen = !!imgOpen[imgKey];
+        const batchTitle = 'Batch ' + r.batch + (sub.name ? ', ' + sub.name : '');
+        const layers = images.slice(0, 3).map((m, n) => ({ img: m.img, cls: images.length === 1 ? 'solo' : 'st-' + n })).reverse();
+        return {
+          batch: r.batch, dept: r.dept,
+          stack: layers.length ? layers : [{ img: none, cls: 'solo' }],
+          imgAria: (galleryOpen ? 'Hide images of ' : 'Show ' + plural(images.length, 'image') + ' of ') + batchTitle,
+          galleryOpen: galleryOpen, galleryStr: galleryOpen ? 'true' : 'false',
+          toggleImgs: () => set({ imgOpen: Object.assign({}, imgOpen, { [imgKey]: !galleryOpen }) }),
+          galleryTitle: batchTitle + ': ' + (images.length ? plural(images.length, 'image') : 'no images yet'),
+          images: images.map((m) => ({ img: m.img, caption: m.caption, alt: (sub.name || a.name) + ', ' + m.caption })),
+          addLabel: images.length ? 'Add more' : 'Add first image',
+          addImages: () => set({ addImg: { assetId: a.id, rowId: r.id } }),
+          room: r.room || NO_ROOM, roomCls: r.room ? '' : 'missing',
+          hasG: !!r.g, noG: !r.g, g: r.g,
+          l: r.l || 'None', localCls: r.l ? '' : 'missing',
+          txn: r.txn || '-', grn: r.grn,
+          qty: r.qty, rate: '₹ ' + r.rate,
+          altCls: i % 2 ? 'alt' : '',
+          editRoom: () => openEdit(a.id, r.id, 'room', r.room),
+          editG: () => openEdit(a.id, r.id, 'g', r.g),
+          editL: () => openEdit(a.id, r.id, 'l', r.l)
+        };
+      });
+      return {
+        id: a.id, name: a.name, spec: a.spec, no: a.no, sku: a.sku, img: a.img,
+        capital: a.capital ? 'CAPITAL ITEM (Unknown)' : '',
+        open: opened, closed: !opened, openStr: opened ? 'true' : 'false', chevCls: opened ? 'open' : '', openCls: opened ? 'open' : '',
+        toggleTitle: (opened ? 'Collapse ' : 'Expand ') + a.name,
+        toggle: () => set(openPatch(a.id, !opened)),
+        shown: shown, qtyCap: shown !== overall ? 'of ' + overall + ' overall' : 'Total',
+        chipLabel: 'Deployed to',
+        chips: chips, hasMore: chipCounts.length > 5, moreLabel: '+' + (chipCounts.length - 5) + ' more',
+        showMore: () => set(openPatch(a.id, true)),
+        rows: outRows,
+        tableLabel: a.name + ' items'
+      };
+    }).filter(Boolean);
+    assets.sort((x, y) => x.name.localeCompare(y.name) || x.no - y.no);
+
+    // Sidebar lists stay faceted: each list ignores its own selection.
+    const prefixCounts = {};
+    allRows({ prefix: true }).forEach((r) => { prefixCounts[r._a.prefix] = (prefixCounts[r._a.prefix] || 0) + r.qty; });
+    const lq = listQ.trim().toLowerCase();
+    const item = (label, pre, count, on, pick) => ({ label: label, pre: pre, count: count, on: on, cls: (on ? 'on ' : '') + (count ? '' : 'zero'), pick: pick });
+    const prefixTotal = Object.keys(prefixCounts).reduce((t, k) => t + prefixCounts[k], 0);
+    const sideItems = [item('All asset types', '', prefixTotal, !prefix, () => set({ prefix: '' }))].concat(
+      this.prefixes().filter((p) => !lq || (p[0] + ' ' + p[1]).toLowerCase().indexOf(lq) >= 0)
+        .map((p) => item(p[0], '[' + p[1] + ']', prefixCounts[p[1]] || 0, prefix === p[1], () => set({ prefix: prefix === p[1] ? '' : p[1] }))));
+
+    // Results line.
+    const matched = allRows({});
+    const deptCount = new Set(matched.map((r) => r.dept)).size;
+    const prefixObj = this.prefixes().find((p) => p[1] === prefix);
+    const heading = prefixObj ? prefixObj[0] : 'All assets';
+    const parts = [plural(assets.length, 'asset'), plural(sumQty(matched), 'item'), plural(deptCount, 'Store / Consumer', 'Stores / Consumers')];
+    const summary = parts.join('  ·  ');
+
+    const pills = [];
+    if (prefixObj) pills.push({ label: prefixObj[0], aria: 'Remove filter ' + prefixObj[0], remove: () => set({ prefix: '' }) });
+
+    const triItem = (key, label, mode) => ({
+      label: label, word: mode === 'any' ? 'Any' : mode === 'yes' ? 'Yes' : 'No',
+      aria: label + ': ' + mode + '. Activate to change.',
+      isAny: mode === 'any', isYes: mode === 'yes',
+      cycle: () => set({ [key]: mode === 'any' ? 'yes' : mode === 'yes' ? 'no' : 'any' })
+    });
+    const setAll = (val) => {
+      const next = {};
+      assets.forEach((a) => { next[a.id] = val; });
+      set({ open: Object.assign({}, open, next) });
+    };
+
+    return {
+      f: { item: f.item || '', batch: f.batch || '', store: f.store || '', g: f.g || '', l: f.l || '', txn: f.txn || '', qty: f.qty || '' },
+      on: {
+        item: (e) => setFilter('item', e.target.value),
+        batch: (e) => setFilter('batch', e.target.value), store: (e) => setFilter('store', e.target.value),
+        g: (e) => setFilter('g', e.target.value), l: (e) => setFilter('l', e.target.value),
+        txn: (e) => setFilter('txn', e.target.value), qty: (e) => setFilter('qty', e.target.value)
+      },
+      hasFilters: hasFilters,
+      clearFilters: () => set({ cf: {} }),
+      showAdd: !!addState, add: add, closeAdd: closeAdd, saveAdd: saveAdd,
+      onAddKey: (e) => { if (e.key === 'Escape') closeAdd(); },
+      showModal: !!edit, modal: modal, closeEdit: closeEdit, saveEdit: saveEdit,
+      onEditValue: (e) => set({ edit: Object.assign({}, edit, { value: e.target.value }) }),
+      onModalKey: (e) => { if (e.key === 'Escape') closeEdit(); },
+      sideTitle: 'Global Tag Prefixes',
+      sidePlaceholder: 'Filter Tag Prefixes',
+      listQ: listQ, onListQ: (e) => set({ listQ: e.target.value }),
+      sideItems: sideItems,
+      tri: [triItem('gt', 'Global Tagged', gt), triItem('lt', 'Local Tagged', lt), triItem('cap', 'Capital', cap)],
+      wuOn: !!s.wu, toggleWu: () => set({ wu: !s.wu }),
+      collapseAll: () => setAll(false), expandAll: () => setAll(true),
+      heading: heading, summary: summary,
+      pills: pills, hasPills: pills.length > 0,
+      clearAll: () => set({ prefix: '', gt: 'any', lt: 'any', cap: 'yes', cf: {} }),
+      assets: assets, noResults: assets.length === 0
+    };
+  }
+}
+</script>
+<template data-dc="ImagePicker">
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.ip,.ip button,.ip input{font-family:Roboto,"Segoe UI",Arial,sans-serif}
+.ip{background:#F4F6F7;color:#263238;font-size:14px;line-height:1.35;display:flex;flex-direction:column}
+.ip *{box-sizing:border-box}
+.ip button{cursor:pointer}
+.ip button:focus-visible,.ip input:focus-visible{outline:2px solid #0A7CC2;outline-offset:1px}
+.ip-top{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#5A7785;color:#fff;padding:10px 12px 10px 16px}
+.ip-top h2{margin:0;font-size:16px;font-weight:500}
+.ip-x{background:none;border:0;color:#fff;padding:4px;display:inline-flex;border-radius:4px}
+.ip-x:hover{background:rgba(255,255,255,.16)}
+
+.ip-summary{display:flex;flex-wrap:wrap;gap:12px 24px;background:#fff;padding:12px 16px;border-bottom:1px solid #CFD8DC}
+.ip-asset{flex:1 1 290px;display:flex;gap:10px;align-items:center;min-width:0}
+.ip-asset img{width:76px;height:57px;object-fit:contain;flex:none;background:#F5F7F8;border-radius:3px}
+.ip-a-name{font-size:15px;font-weight:700;color:#212B31;display:block}
+.ip-a-spec{font-size:13px;color:#37474F;display:block}
+.ip-a-meta{display:flex;gap:12px;font-size:12.5px;color:#55656E;margin-top:1px}
+.ip-a-meta b{color:#263238}
+.ip-facts{flex:999 1 560px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 16px;min-width:0}
+.ip-fact{min-width:0}
+.ip-fact span{display:block;font-size:12px;color:#55656E}
+.ip-fact b{display:block;font-size:14px;font-weight:500;overflow-wrap:anywhere}
+
+.ip-body{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);gap:12px;padding:12px;align-items:start}
+.ip-sec{background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.14);overflow:hidden;min-width:0}
+.ip-sec-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;background:#ECEFF1;padding:9px 12px}
+.ip-sec-title{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:700}
+.ip-step{width:22px;height:22px;border-radius:50%;background:#5A7785;color:#fff;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ip-count{background:#fff;border-radius:11px;padding:1px 8px;font-size:12.5px;font-weight:700}
+.ip-upload{position:relative;display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 11px;border:1px solid #0A7CC2;border-radius:4px;background:#fff;color:#0A7CC2;font-size:13px;font-weight:500;cursor:pointer}
+.ip-upload:hover{background:#DDEFFA}
+.ip-upload:focus-within{outline:2px solid #0A7CC2;outline-offset:1px}
+.ip-upload input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.ip-help{margin:0;padding:10px 12px 0;font-size:13px;color:#455A64}
+.ip-tools{padding:10px 12px 0}
+.ip-filter{display:flex;align-items:center;gap:6px;border:1px solid #CFD8DC;border-radius:6px;padding:0 8px;color:#6B7A83}
+.ip-filter:focus-within{border-color:#0A7CC2}
+.ip-filter input{border:0;outline:0 !important;background:none;flex:1;min-width:0;height:32px;font-size:13.5px;color:#263238}
+.ip-filter input::placeholder{color:#6B7A83;font-style:italic}
+.ip-notice{margin:10px 12px 0;padding:7px 10px;background:#DDEFFA;border-radius:4px;font-size:13px;color:#0B4F7A}
+.ip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;padding:12px;max-height:330px;overflow-y:auto}
+.ip-tile-wrap{position:relative;min-width:0}
+.ip-tile{display:block;width:100%;background:#fff;border:1px solid #CFD8DC;border-radius:4px;padding:5px;text-align:left;color:#263238}
+.ip-tile:hover{border-color:#0A7CC2}
+.ip-tile.on{border-color:#0A7CC2;box-shadow:0 0 0 2px #0A7CC2}
+.ip-tile img{display:block;width:100%;height:88px;object-fit:contain}
+.ip-name{display:block;margin-top:5px;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ip-uses{display:block;font-size:11.5px;color:#55656E}
+.ip-check{position:absolute;top:10px;left:10px;width:22px;height:22px;border:2px solid #546E7A;border-radius:4px;background:#fff;color:#fff;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.ip-check.on{background:#0A7CC2;border-color:#0A7CC2}
+.ip-del{position:absolute;top:8px;right:8px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #CFD8DC;border-radius:50%;color:#B3261E;padding:0}
+.ip-del:hover{background:#FBE9E7}
+.ip-confirm{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px;background:#fff;border:1px solid #B3261E;border-radius:4px;font-size:12.5px;text-align:center}
+.ip-confirm small{font-size:11.5px;color:#55656E}
+.ip-confirm-btns{display:flex;justify-content:center;gap:6px}
+.ip-mini{min-height:28px;padding:0 10px;border:1px solid #90A4AE;border-radius:4px;background:#fff;font-size:12.5px;color:#37474F}
+.ip-mini.danger{background:#B3261E;border-color:#B3261E;color:#fff}
+.ip-none{padding:24px 12px;text-align:center;color:#55656E;font-size:13px}
+
+.ip-list{display:flex;flex-direction:column;max-height:398px;overflow-y:auto}
+.ip-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #ECEFF1}
+.ip-item img{width:60px;height:45px;object-fit:contain;flex:none;border:1px solid #DDE3E6;border-radius:2px;background:#fff}
+.ip-item-name{flex:1;min-width:0;font-size:13px;overflow-wrap:anywhere}
+.ip-remove{background:none;border:0;padding:4px;border-radius:4px;color:#55656E;display:inline-flex;flex:none}
+.ip-remove:hover{background:#ECEFF1;color:#263238}
+
+.ip-foot{position:sticky;bottom:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid #CFD8DC}
+.ip-btn{min-height:38px;padding:0 16px;border:1px solid #90A4AE;border-radius:4px;background:#fff;color:#37474F;font-size:14px;font-weight:500}
+.ip-btn:hover{background:#F1F6F8}
+.ip-btn.primary{background:#0A7CC2;border-color:#0A7CC2;color:#fff}
+.ip-btn.primary:hover{background:#086AA6}
+.ip-btn[disabled]{opacity:.5;cursor:not-allowed}
+
+@media (max-width:760px){
+  .ip-body{grid-template-columns:minmax(0,1fr)}
+  .ip-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (pointer:coarse){
+  .ip-del,.ip-remove,.ip-x{min-width:44px;min-height:44px;justify-content:center}
+  .ip-upload,.ip-btn,.ip-mini{min-height:44px}
+}
+</style>
+</helmet>
+<div class="ip">
+  <div class="ip-top">
+    <h2>{{title}}</h2>
+    <button class="ip-x" aria-label="Close" onClick="{{close}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+  </div>
+
+  <section class="ip-summary" aria-label="Item details">
+    <div class="ip-asset">
+      <img src="{{info.img}}" alt="{{info.name}}">
+      <div>
+        <span class="ip-a-name">{{info.name}}</span>
+        <span class="ip-a-spec">{{info.spec}}</span>
+        <div class="ip-a-meta"><span>No: <b>{{info.no}}</b></span><span>SKU: <b>{{info.sku}}</b></span></div>
+      </div>
+    </div>
+    <div class="ip-facts">
+      <sc-for list="{{facts}}" as="fa" hint-placeholder-count="10">
+        <div class="ip-fact"><span>{{fa.label}}</span><b>{{fa.value}}</b></div>
+      </sc-for>
+    </div>
+  </section>
+
+  <div class="ip-body">
+    <section class="ip-sec" aria-labelledby="ip-lib">
+      <div class="ip-sec-head">
+        <h3 class="ip-sec-title" id="ip-lib"><span class="ip-step">1</span>Select from image library<span class="ip-count">{{libCount}}</span></h3>
+        <label class="ip-upload"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"></path></svg>Upload new images<input type="file" accept="image/*" multiple="{{yes}}" aria-label="Upload new images" onChange="{{onUpload}}"></label>
+      </div>
+      <p class="ip-help">{{libHelp}}</p>
+      <div class="ip-tools">
+        <label class="ip-filter">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input aria-label="Filter library by file name" placeholder="Filter by file name" value="{{filter}}" onChange="{{onFilter}}">
+        </label>
+      </div>
+      <sc-if value="{{notice}}" hint-placeholder-val="{{ false }}"><div class="ip-notice" role="status">{{notice}}</div></sc-if>
+      <sc-if value="{{noTiles}}" hint-placeholder-val="{{ false }}"><div class="ip-none">{{noTilesText}}</div></sc-if>
+      <sc-if value="{{hasTiles}}" hint-placeholder-val="{{ true }}">
+        <div class="ip-grid">
+          <sc-for list="{{tiles}}" as="t" hint-placeholder-count="6">
+            <div class="ip-tile-wrap">
+              <button class="ip-tile {{t.cls}}" aria-pressed="{{t.pressed}}" title="{{t.name}}" onClick="{{t.toggle}}">
+                <img src="{{t.img}}" alt="">
+                <span class="ip-name">{{t.name}}</span>
+                <span class="ip-uses">{{t.usesLabel}}</span>
+              </button>
+              <span class="ip-check {{t.cls}}" aria-hidden="true"><sc-if value="{{t.on}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.500" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.500 4.500L19 7"></path></svg></sc-if></span>
+              <button class="ip-del" aria-label="{{t.delAria}}" title="Delete from library" onClick="{{t.askDelete}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg></button>
+              <sc-if value="{{t.confirming}}" hint-placeholder-val="{{ false }}">
+                <div class="ip-confirm" role="alert">
+                  <span>Delete from library?</span>
+                  <small>{{t.confirmNote}}</small>
+                  <div class="ip-confirm-btns">
+                    <button class="ip-mini" onClick="{{cancelDelete}}">Keep</button>
+                    <button class="ip-mini danger" onClick="{{t.doDelete}}">Delete</button>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </section>
+
+    <section class="ip-sec" aria-labelledby="ip-att">
+      <div class="ip-sec-head">
+        <h3 class="ip-sec-title" id="ip-att"><span class="ip-step">2</span>{{attachedTitle}}<span class="ip-count">{{selCount}}</span></h3>
+      </div>
+      <sc-if value="{{noSel}}" hint-placeholder-val="{{ false }}">
+        <div class="ip-none">No images attached yet. Select images from the library to attach them here.</div>
+      </sc-if>
+      <div class="ip-list">
+        <sc-for list="{{selected}}" as="s" hint-placeholder-count="2">
+          <div class="ip-item">
+            <img src="{{s.img}}" alt="">
+            <span class="ip-item-name">{{s.name}}</span>
+            <button class="ip-remove" aria-label="{{s.removeAria}}" title="Remove from this batch" onClick="{{s.remove}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <div class="ip-foot">
+    <button class="ip-btn" onClick="{{close}}">Cancel</button>
+    <button class="ip-btn primary" disabled="{{noChange}}" onClick="{{save}}">{{saveLabel}}</button>
+  </div>
+</div>
+</template>
+<script type="text/plain" data-dc-logic="ImagePicker">
+class Component extends DCLogic {
+  sampleInfo() {
+    const front = 'images/printer.svg';
+    return {
+      name: 'Printer', spec: 'HP, Laser, 1022, 18PPM, 1200 DPI, USB, Black, A4, Single', no: 2056, sku: 'NOS', img: front,
+      batch: '20042', store: 'Accommodation', room: 'Hostel Block A', g: 'P-720', l: 'ACM/PR-08', qty: 1, rate: '₹ 9200',
+      none: 'images/placeholder.svg', isBatch: false,
+      library: [
+        { id: front, img: front, name: 'printer-front.jpg', uses: 6 },
+        { id: 'side', img: 'images/printer-side.svg', name: 'printer-side.jpg', uses: 2 },
+        { id: 'tray', img: 'images/printer-tray.svg', name: 'printer-paper-tray.jpg', uses: 1 },
+        { id: 'label', img: 'images/printer-label.svg', name: 'printer-serial-label.jpg', uses: 0 }
+      ],
+      attached: [front]
+    };
+  }
+  renderVals() {
+    const s = this.state || {};
+    const set = (o) => this.setState(o);
+    const info = this.props.info || this.sampleInfo();
+    const close = () => { if (this.props.onClose) this.props.onClose(); };
+    const lib = s.lib || info.library;
+    const sel = s.sel || info.attached;
+    const filter = s.filter || '';
+    const ft = filter.trim().toLowerCase();
+    const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+    const dash = (v) => (v === undefined || v === null || v === '') ? '-' : v;
+    const has = (id) => sel.indexOf(id) >= 0;
+    const toggle = (id) => set({ sel: has(id) ? sel.filter((x) => x !== id) : sel.concat([id]), notice: '' });
+
+    const tiles = lib.filter((e) => !ft || e.name.toLowerCase().indexOf(ft) >= 0).map((e) => {
+      const on = has(e.id);
+      const uses = e.uses || 0;
+      return {
+        img: e.img, name: e.name, on: on, cls: on ? 'on' : '', pressed: on ? 'true' : 'false',
+        usesLabel: uses ? 'On ' + plural(uses, 'other batch').replace('batchs', 'batches') : 'Not used elsewhere',
+        toggle: () => toggle(e.id),
+        delAria: 'Delete ' + e.name + ' from library',
+        askDelete: () => set({ confirmDel: e.id }),
+        confirming: s.confirmDel === e.id,
+        confirmNote: uses ? 'It will be removed from ' + plural(uses, 'other batch').replace('batchs', 'batches') + '.' : 'No other batch uses it.',
+        doDelete: () => set({ lib: lib.filter((x) => x.id !== e.id), sel: sel.filter((x) => x !== e.id), confirmDel: null, notice: '' })
+      };
+    });
+    const selected = sel.map((id) => lib.find((e) => e.id === id)).filter(Boolean).map((e) => ({
+      img: e.img, name: e.name,
+      removeAria: 'Remove ' + e.name + ' from this batch',
+      remove: () => toggle(e.id)
+    }));
+
+    const onUpload = (ev) => {
+      const files = Array.from(ev.target.files || []);
+      let nextLib = lib;
+      let nextSel = sel;
+      const dupes = [];
+      files.forEach((f, i) => {
+        const found = nextLib.find((e) => e.name.toLowerCase() === f.name.toLowerCase());
+        if (found) {
+          dupes.push(f.name);
+          if (nextSel.indexOf(found.id) < 0) nextSel = nextSel.concat([found.id]);
+        } else {
+          const id = 'up-' + Date.now() + '-' + i;
+          nextLib = [{ id: id, img: info.none, name: f.name, uses: 0 }].concat(nextLib);
+          nextSel = nextSel.concat([id]);
+        }
+      });
+      const notice = dupes.length ? dupes.join(', ') + (dupes.length === 1 ? ' is' : ' are') + ' already in the library, so the existing copy was selected.' : '';
+      ev.target.value = '';
+      set({ lib: nextLib, sel: nextSel, notice: notice, filter: '' });
+    };
+
+    const sameSel = sel.length === info.attached.length && sel.every((id, i) => id === info.attached[i]);
+    const sameLib = lib.length === info.library.length;
+    const attachedTo = 'Batch ' + info.batch;
+    return {
+      info: info, yes: true, close: close,
+      title: 'Attach images to ' + attachedTo,
+      facts: [
+        { label: 'Batch', value: dash(info.batch) },
+        { label: 'Store / Consumer', value: dash(info.store) },
+        { label: 'Global Tag', value: dash(info.g) },
+        { label: 'Local Tag', value: dash(info.l) },
+        { label: 'Qty', value: dash(info.qty) },
+        { label: 'Txn Remarks', value: dash(info.txnRemarks) },
+        { label: 'Consuming Location', value: dash(info.room) },
+        { label: 'Global Tag Remarks', value: dash(info.gRemarks) },
+        { label: 'Local Tag Remarks', value: dash(info.lRemarks) },
+        { label: 'Rate', value: dash(info.rate) }
+      ],
+      libCount: lib.length,
+      libHelp: 'All images uploaded for ' + info.name + '. Check here first, and upload only if the image is missing.',
+      filter: filter, onFilter: (e) => set({ filter: e.target.value }),
+      notice: s.notice || '',
+      tiles: tiles, hasTiles: tiles.length > 0, noTiles: tiles.length === 0,
+      noTilesText: ft ? 'No images match this file name.' : 'No images in the library yet. Upload the first one.',
+      cancelDelete: () => set({ confirmDel: null }),
+      onUpload: onUpload,
+      attachedTitle: 'Attached to ' + attachedTo,
+      selected: selected, selCount: selected.length, noSel: selected.length === 0,
+      noChange: sameSel && sameLib,
+      saveLabel: 'Save to ' + attachedTo,
+      save: () => { if (this.props.onSave) this.props.onSave(lib, sel); else set({ notice: 'Saved in this preview only.' }); }
+    };
+  }
+}
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="dc-lite.js"></script>
+</body>
+</html>

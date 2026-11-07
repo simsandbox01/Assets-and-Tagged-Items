@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MMS Asset Register Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bar:#5A7785;--ground:#F4F6F7;--text:#263238;--muted:#455A64;--link:#0A7CC2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--text);font-family:Roboto,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.45}
+header{background:var(--bar);color:#fff;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px}
+header .logo{font-size:30px;font-weight:300;letter-spacing:.5px;line-height:1}
+header .screen{font-weight:500}
+main{max-width:920px;margin:0 auto;padding:28px 16px}
+h1{margin:0 0 6px;font-size:24px}
+.lead{margin:0 0 20px;color:var(--muted)}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.option{display:block;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.18);padding:18px;color:inherit;text-decoration:none}
+.option:hover{box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.option:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.option h2{margin:0 0 6px;font-size:17px;color:var(--link)}
+.option p{margin:0;color:var(--muted)}
+.note{margin:20px 0 0;font-size:13.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><span class="logo">MMS</span><span class="screen">Asset And Tagged Items: prototype</span></header>
+<main>
+  <h1>Asset register redesign</h1>
+  <p class="lead">Two layout options for reviewing where assets are deployed. Open each one and try expanding rows and filtering.</p>
+  <div class="options">
+    <a class="option" href="store-grouping.html">
+      <h2>Option 1: Store Grouping</h2>
+      <p>Rows are grouped by Store / Consumer under each asset. Expand Cupboard to compare the multi-image layouts.</p>
+    </a>
+    <a class="option" href="flat-list.html">
+      <h2>Option 2: Flat list with column filters</h2>
+      <p>One flat list under each asset, with stacked images and a shared header of column filters.</p>
+    </a>
+  </div>
+  <p class="note">All names, tags and rates are sample data. Changes reset when the page reloads.</p>
+</main>
+</body>
+</html>
